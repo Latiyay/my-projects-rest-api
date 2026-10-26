@@ -5,6 +5,7 @@ import {
 } from '../data/store.js'
 import { ApiError } from '../utils/errors.js'
 import { sendCollection, sendResource } from '../utils/response.js'
+import { parseIdParam } from '../utils/validation.js'
 
 const projects = new Hono()
 
@@ -14,7 +15,9 @@ projects.get('/', (c) => {
 })
 
 projects.get('/:id', (c) => {
-  const project = getProjectById(+c.req.param('id'))
+  const id = parseIdParam(c.req.param('id')) 
+  
+  const project = getProjectById(id)
 
   if (!project) {
     throw new ApiError(404, 'NOT_FOUND', 'Project not found.')
