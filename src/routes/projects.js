@@ -1,11 +1,12 @@
 import { Hono } from 'hono'
 import {
   listProjects,
-  getProjectById
+  getProjectById,
+  createProject,
 } from '../data/store.js'
 import { ApiError } from '../utils/errors.js'
 import { sendCollection, sendResource } from '../utils/response.js'
-import { parseIdParam } from '../utils/validation.js'
+import { parseIdParam, validateProjectCreate } from '../utils/validation.js'
 
 const projects = new Hono()
 
@@ -14,9 +15,27 @@ projects.get('/', (c) => {
   return sendCollection(c, data)
 })
 
+projects.post('/', async (c) => {
+  const payload = await parseJsonBody(c)
+  const details = validateProjectCreate(payload)
+
+  if (details.length > 0) {
+    throw new ApiError(
+      422,
+      'VALIDATION_ERROR',
+      'Some fields are invalid.',
+      details,
+    )
+  }
+
+  const project = createProject(payload)
+  c.header('Location', `/api/projects/${project.id}`)
+  return sendResource(c, project, 201)
+})
+
 projects.get('/:id', (c) => {
-  const id = parseIdParam(c.req.param('id')) 
-  
+  const id = parseIdParam(c.req.param('id'))
+
   const project = getProjectById(id)
 
   if (!project) {
@@ -25,5 +44,6 @@ projects.get('/:id', (c) => {
 
   return sendResource(c, project)
 })
+
 
 export default projects
