@@ -9,42 +9,36 @@ const idParamSchema = z
     error: 'ID must be a positive integer.',
   })
 
-
-  const projectCreateSchema = z.strictObjectobject({
-    name: z
-    .string({ 
-        error: 'Project name is required.',
-    })
+const projectCreateSchema = z.strictObject({
+  name: z
+    .string({ error: 'Project name is required.' })
     .trim()
     .min(1, { error: 'Project name is required.' }),
+  description: z.string({ error: 'Description must be a string.' }).optional(),
+})
+
+const projectPatchSchema = z
+  .strictObject({
+    name: z
+      .string({ error: 'Project name must be a non-empty string.' })
+      .trim()
+      .min(1, { error: 'Project name must be a non-empty string.' })
+      .optional(),
     description: z
-    .string({ error: 'Project name is required.' })
-    .optional(),
+      .string({ error: 'Description must be a string.' })
+      .optional(),
+  })
+  .superRefine((value, ctx) => {
+    if (Object.keys(value).length === 0) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['body'],
+        message: 'Provide at least one field to update.',
+      })
+    }
   })
 
-const projectPatchSchema = z.strictObjectobject({
-  name: z
-    .string({ 
-       error: 'Project name must be a non-empty string.',
-    })
-    .trim()
-    .min(1, { error: 'Project name must be a non-empty string.' })
-    .optional(),
-  description: z
-    .string({ error: 'Description must be a string.' })
-    .optional(),
-})
-.superRefine((value, ctx) => {
-  if (Object.keys(value).length === 0) {
-    ctx.addIssue({
-      code: 'custom',
-      path: ['body'],
-      message: 'Provide at least one field to update.',
-    })
-  }
-})
-
-  export function parseIdParam(rawValue, fieldName = 'id') {
+export function parseIdParam(rawValue, fieldName = 'id') {
   const result = idParamSchema.safeParse(rawValue)
 
   if (!result.success) {
@@ -86,21 +80,20 @@ function mapZodIssuesToDetails(issues) {
   return details
 }
 
-
 function validateWithSchema(payload, schema) {
-    const result = schema.safeParse(payload)
+  const result = schema.safeParse(payload)
 
-    if (!result.success) {
-        return []
-    }
+  if (result.success) {
+    return []
+  }
 
-    return mapZodIssuesToDetails(result.error.issues)
+  return mapZodIssuesToDetails(result.error.issues)
 }
 
 export function validateProjectCreate(payload) {
-    return validateWithSchema(payload, projectCreateSchema)
+  return validateWithSchema(payload, projectCreateSchema)
 }
 
 export function validateProjectPatch(payload) {
-    return validateWithSchema(payload, projectPatchSchema)
+  return validateWithSchema(payload, projectPatchSchema)
 }
