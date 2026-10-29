@@ -20,8 +20,8 @@ let tasks = [
   {
     id: 1,
     project_id: 1,
-    title: 'Draft Homepage Wireframe',
-    description: 'Create desktop and mobile layout drafts.',
+    title: 'Implement Search Feature',
+    description: 'Add a search bar to filter results based on input.',
     status: 'in_progress',
     created_at: seededAt,
     updated_at: seededAt,
@@ -29,8 +29,8 @@ let tasks = [
   {
     id: 2,
     project_id: 2,
-    title: 'Collect New Screenshots',
-    description: 'Replace old portfolio images.',
+    title: 'Design Navigation Menu',
+    description: 'Create a navigation bar with working links.',
     status: 'todo',
     created_at: seededAt,
     updated_at: seededAt,
@@ -38,8 +38,8 @@ let tasks = [
   {
     id: 3,
     project_id: 2,
-    title: 'Finalize Slide Deck',
-    description: 'Include examples of good API design.',
+    title: 'Set Up Project Repository',
+    description: 'Initialize Git and organize the project files.',
     status: 'done',
     created_at: seededAt,
     updated_at: seededAt,
