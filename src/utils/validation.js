@@ -41,7 +41,7 @@ const projectPatchSchema = z
     }
   })
 
-  const taskCreateSchema = z.strictObject({
+const taskCreateSchema = z.strictObject({
   title: z
     .string({ error: 'Task name is required.' })
     .trim()
@@ -172,4 +172,20 @@ export function validateTaskCreate(payload) {
 
 export function validateTaskPatch(payload) {
   return validateWithSchema(payload, taskPatchSchema)
+}
+
+export function validateRegister(payload) {
+  return validateWithSchema(payload, registerSchema)
+}
+
+export function validateLogin(payload) {
+  return validateWithSchema(payload, loginSchema)
+}
+
+export function validateRefresh(payload) {
+  return validateWithSchema(payload, refreshSchema)
+}
+
+export function validateLogout(payload) {
+  return validateWithSchema(payload, logoutSchema)
 }
