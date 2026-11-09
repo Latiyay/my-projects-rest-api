@@ -122,6 +122,32 @@ function mapZodIssuesToDetails(issues) {
   return details
 }
 
+const registerSchema = z.strictObject({
+  email: z.email({ error: 'Email must be a valid email address.' }),
+  password: z
+    .string({ error: 'Password is required.' })
+    .min(8, { error: 'Password must be at least 8 characters.' }),
+})
+
+const loginSchema = z.strictObject({
+  email: z.email({ error: 'Email must be a valid email address.' }),
+  password: z.string({ error: 'Password is required.' }).min(1, {
+    error: 'Password is required.',
+  }),
+})
+
+const refreshSchema = z.strictObject({
+  refresh_token: z
+    .string({ error: 'Refresh token is required.' })
+    .min(1, { error: 'Refresh token is required.' }),
+})
+
+const logoutSchema = z.strictObject({
+  refresh_token: z
+    .string({ error: 'Refresh token is required.' })
+    .min(1, { error: 'Refresh token is required.' }),
+})
+
 function validateWithSchema(payload, schema) {
   const result = schema.safeParse(payload)
 
